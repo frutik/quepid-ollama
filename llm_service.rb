@@ -53,7 +53,13 @@ class LlmService
     llm_service_url = ENV['LLM_SERVICE_URL'] || 'https://api.openai.com'
     llm_model = ENV['LLM_MODEL'] || 'gpt-4o'
     llm_key = ENV['LLM_KEY'] || @openai_key
-    conn = Faraday.new(url: llm_service_url) do |f|
+    llm_timeout = ENV['LLM_TIMEOUT'] || 30
+    conn = Faraday.new(
+      url: llm_service_url,
+      request: {
+        timeout: llm_timeout,
+        open_timeout: llm_timeout
+    }   ) do |f|
       f.request :json
       f.response :json
       f.adapter Faraday.default_adapter
@@ -64,8 +70,6 @@ class LlmService
         backoff_factor:      2,
         retry_statuses:      [ 429 ],
       }
-      f.options.timeout = 3600        # Increase read timeout to 30 seconds
-      f.options.open_timeout = 3600   # Increase connection timeout to 10 seconds
     end
 
     body = {

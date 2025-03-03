@@ -66,3 +66,4 @@ services:
       LLM_SERVICE_URL: "http://ollama:11434"
       LLM_KEY: "llama2"
       LLM_MODEL: "llama2"
+      LLM_TIMEOUT: 600
